@@ -1,0 +1,33 @@
+package utils
+
+import (
+	. "go.minekube.com/common/minecraft/component"
+	"go.minekube.com/gate/pkg/command"
+)
+
+func SendMessageToSource(c *command.Context, message string) error {
+	return c.Source.SendMessage(&Text{Content: message})
+}
+
+func Int32ToString(value int32) string {
+	buf := [11]byte{}
+	pos := len(buf)
+	i := int64(value)
+	signed := i < 0
+
+	if signed {
+		i = -i
+	}
+
+	for {
+		pos--
+		buf[pos], i = '0'+byte(i%10), i/10
+		if i == 0 {
+			if signed {
+				pos--
+				buf[pos] = '-'
+			}
+			return string(buf[pos:])
+		}
+	}
+}
